@@ -18,4 +18,4 @@ curl -fsSL https://raw.githubusercontent.com/csaben/vim-chromium/main/install.sh
 
 Then open `chrome://extensions`, enable Developer mode, and choose **Load unpacked**. Select the downloaded `vim-chromium-main` folder. Chrome requires this final browser step for manually installed extensions.
 
-Click the extension icon and choose **Open settings**, or press `Ctrl+Shift+,`. Shortcuts can be changed there.
+Click the extension icon and choose **Open settings**, or press `Ctrl+Shift+Y`. Shortcuts can be changed there.
