@@ -16,7 +16,7 @@ In Git Bash, WSL, or another Unix shell, use:
 curl -fsSL https://raw.githubusercontent.com/csaben/vim-chromium/main/install.sh | bash -s -- csaben/vim-chromium
 ```
 
-Then open `chrome://extensions`, enable Developer mode, and choose **Load unpacked**. Select the downloaded `vim-chromium-main` folder. Chrome requires this final browser step for manually installed extensions.
+Then open `chrome://extensions`, enable Developer mode, and choose **Load unpacked**. Select the installer’s folder. It uses a stable location, so future installer runs update the same extension; click **Reload** rather than removing the old plugin. Chrome requires this browser step for manually installed extensions.
 
 Click the extension icon and choose **Open settings**, or press `Ctrl+Shift+Y`. Shortcuts can be changed there.
 
