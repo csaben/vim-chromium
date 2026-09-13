@@ -1,1 +1,1 @@
-document.querySelector('#settings').onclick=()=>chrome.runtime.openOptionsPage();
+document.querySelector('#settings').onclick=()=>chrome.runtime.openOptionsPage();chrome.storage.local.get(['updateAvailable','latestVersion'],v=>{if(v.updateAvailable){const el=document.querySelector('#update');el.style.display='block';el.querySelector('a').textContent=`Update available (${v.latestVersion})`;}});
