@@ -30,9 +30,10 @@ In Google Docs, press `Esc` (or `CapsLock` if you remap it) to enter normal mode
 | `w` `b` `e` | Move by word |
 | `0` `$` | Start / end of line |
 | `gg` `G` | Start / end of document |
-| `yy` | Yank the current line |
+| `yy` `dd` | Yank / delete the current line |
 | `p` `P` | Put the yanked line below / above the cursor |
-| `i` `a` | Insert at the cursor |
+| `i` `a` | Insert before / after the cursor |
+| `I` `A` | Insert at the start / end of the line |
 | `o` `O` | Open a new line below / above and insert |
 
 Keys held with `Ctrl`, `Alt`, or `Cmd` pass straight through in normal mode, so `Ctrl+V`, `Ctrl+C`, and `Ctrl+Z` still work, as do the history and window-switching shortcuts. Press `Esc` to return to normal mode after inserting.
