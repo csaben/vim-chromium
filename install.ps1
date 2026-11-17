@@ -1,4 +1,4 @@
-param([string]$Repo = "csaben/vim-chromium", [switch]$AutoUpdate, [int]$Minutes = 10)
+param([string]$Repo = "csaben/vim-chromium")
 $ErrorActionPreference = "Stop"
 $temp = Join-Path ([System.IO.Path]::GetTempPath()) ("vim-chromium-" + [guid]::NewGuid())
 $folder = Join-Path $env:LOCALAPPDATA "VimChromium"
@@ -13,5 +13,3 @@ try {
   Write-Host "Downloaded extension to: $folder"
   Write-Host "Open chrome://extensions, enable Developer mode, choose Load unpacked, and select that folder."
 } finally { Remove-Item -LiteralPath $archive -Force -ErrorAction SilentlyContinue }
-if ($AutoUpdate) { & (Join-Path $folder "update.ps1") -Register -Folder $folder -Repo $Repo -Minutes $Minutes }
-

@@ -16,6 +16,8 @@ In Git Bash, WSL, or another Unix shell, use:
 curl -fsSL https://raw.githubusercontent.com/csaben/vim-chromium/main/install.sh | bash -s -- csaben/vim-chromium
 ```
 
+You can also skip the installer and **Load unpacked** a clone of this repo directly, which makes `git pull` the whole update step.
+
 Then open `chrome://extensions`, enable Developer mode, and choose **Load unpacked**. Select the installer’s folder. It uses a stable location, so future installer runs update the same extension; click **Reload** rather than removing the old plugin. Chrome requires this browser step for manually installed extensions.
 
 Click the extension icon and choose **Open settings**, or press `Ctrl+Shift+Y`. Shortcuts can be changed there.
@@ -28,15 +30,25 @@ Press `Ctrl+Shift+U` on any page to pause Vim keys for that whole site, or click
 
 ### Staying up to date
 
-The extension reloads itself once it sees newer files on disk, and re-injects itself into open tabs, so fixes land without visiting `chrome://extensions`. Something still has to put the new files there, so register the updater once:
+The extension watches its own files and reloads itself about a second after they change, then re-injects the content script into open tabs. No trip to `chrome://extensions`, no tab refresh, nothing to schedule. Unpacked extensions serve their files straight from disk, so the worker can fetch and fingerprint its own source; a 30 s alarm wakes it if it has gone to sleep, and a reload is held back while Google Docs normal mode has the debugger attached.
+
+An update is therefore just new files on disk. From a clone of this repo:
 
 ```powershell
-& "$env:LOCALAPPDATA/VimChromium/update.ps1" -Register
+git -C D:/Code/vim-chromium pull
 ```
 
-That creates a `VimChromiumUpdate` scheduled task which fetches the latest `main` every 10 minutes. Use `-Minutes 30` to slow it down and `-Unregister` to remove it. Run `update.ps1` with no arguments for a one-off update, or pass `-AutoUpdate` to `install.ps1` to register the task while installing.
+From the installer's folder:
 
-If you load the extension unpacked from a clone of this repo, point the updater at that folder (`-Folder D:/Code/vim-chromium`) and it runs `git pull --ff-only` there instead of downloading a zip.
+```powershell
+& "$env:LOCALAPPDATA/VimChromium/update.ps1"
+```
+
+The badge reads `UPD` when GitHub has a version you do not, so you know when a pull is worth it. A manual reload is only needed if `background.js` is broken badly enough that the watcher never runs.
+
+### Tests
+
+`node test/unit.mjs` runs both scripts in a vm against stub `chrome.*` APIs and covers the Docs command sequences, per-site pause matching, the re-injection handover, and the auto-reload watcher. No browser or dependencies needed.
 
 ### Google Docs
 

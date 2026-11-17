@@ -1,34 +1,12 @@
-param(
-  [string]$Repo = "csaben/vim-chromium",
-  [string]$Folder,
-  [switch]$Register,
-  [switch]$Unregister,
-  [int]$Minutes = 10
-)
+param([string]$Repo = "csaben/vim-chromium", [string]$Folder)
 $ErrorActionPreference = "Stop"
-$taskName = "VimChromiumUpdate"
+
+# One-off refresh of the extension files on disk. The extension itself watches those files and
+# reloads within about a second, so there is nothing to schedule and no browser step afterwards.
 
 if (-not $Folder) {
   if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "manifest.json"))) { $Folder = $PSScriptRoot }
   else { $Folder = Join-Path $env:LOCALAPPDATA "VimChromium" }
-}
-
-if ($Unregister) {
-  Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
-  Write-Host "Removed scheduled task: $taskName"
-  return
-}
-
-if ($Register) {
-  if (-not $PSCommandPath) { throw "Run -Register from a saved copy of update.ps1, not from a piped one-liner." }
-  $arg = '-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "' + $PSCommandPath + '" -Folder "' + $Folder + '" -Repo ' + $Repo
-  $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument $arg
-  $atLogon = New-ScheduledTaskTrigger -AtLogOn
-  $repeat = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(2) -RepetitionInterval (New-TimeSpan -Minutes $Minutes) -RepetitionDuration (New-TimeSpan -Days 3650)
-  $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Minutes 5)
-  Register-ScheduledTask -TaskName $taskName -Action $action -Trigger @($atLogon, $repeat) -Settings $settings -Force | Out-Null
-  Write-Host "Scheduled $taskName every $Minutes minutes for: $Folder"
-  return
 }
 
 function Get-ExtVersion([string]$path) {
@@ -55,5 +33,6 @@ if (Test-Path (Join-Path $Folder ".git")) {
 }
 
 $after = Get-ExtVersion $Folder
-if ($before -eq $after) { Write-Host "Already current: $after ($Folder)" }
-else { Write-Host "Updated $before -> $after ($Folder). Chrome reloads it within 5 minutes." }
+if ($before -eq $after) { Write-Host "Files refreshed, version unchanged: $after ($Folder)" }
+else { Write-Host "Updated $before -> $after ($Folder)" }
+Write-Host "Chrome reloads the extension by itself within a second or two."
